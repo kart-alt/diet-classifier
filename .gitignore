@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.env
+
+# Large model files and datasets
+*.h5
+*.pt
+*.zip
+data/raw/
+dataset/
+models/
+temp_bing_download/
+test_images/
+
+# MacOS
+.DS_Store

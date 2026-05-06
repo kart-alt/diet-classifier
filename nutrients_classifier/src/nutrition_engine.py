@@ -30,6 +30,15 @@ class NutritionEngine:
         # Load fallback CSV
         if self.csv_file.exists():
             self.fallback_db = pd.read_csv(self.csv_file)
+            # Rename columns to match expected format
+            rename_map = {
+                'food': 'Food', 'calories': 'Calories (kcal)', 'protein': 'Protein (g)',
+                'carbs': 'Carbs (g)', 'fat': 'Fat (g)', 'fiber': 'Fiber (g)',
+                'sugar': 'Sugar (g)', 'sodium': 'Sodium (mg)', 'vitamin_c': 'Vitamin C (mg)',
+                'calcium': 'Calcium (mg)', 'iron': 'Iron (mg)'
+            }
+            self.fallback_db.rename(columns=rename_map, inplace=True)
+            
             if 'Food' in self.fallback_db.columns:
                 self.fallback_db = self.fallback_db.drop_duplicates(subset=['Food'])
                 self.fallback_foods = self.fallback_db['Food'].tolist()
@@ -132,6 +141,28 @@ class NutritionEngine:
                 })
                 
         return {"total": total_nutrition, "breakdown": breakdown}
+
+    def search_database(self, query: str, limit: int = 50):
+        """Searches the fallback CSV database for foods matching the query."""
+        if self.fallback_db.empty or not query:
+            return []
+            
+        # Case insensitive substring search
+        matches = self.fallback_db[self.fallback_db['Food'].str.contains(query, case=False, na=False)]
+        results = matches.head(limit).to_dict('records')
+        
+        # Format for frontend
+        formatted_results = []
+        for r in results:
+            formatted_results.append({
+                "food": r.get("Food", "Unknown"),
+                "cal": r.get("Calories (kcal)", 0),
+                "pro": r.get("Protein (g)", 0),
+                "carb": r.get("Carbs (g)", 0),
+                "fat": r.get("Fat (g)", 0),
+                "icon": "🍽️" # Default icon, could map later
+            })
+        return formatted_results
 
     def format_nutrition_label(self, total_nutrition):
         """Returns a string formatted like a classic Nutrition Facts label."""

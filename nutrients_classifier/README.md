@@ -1,67 +1,32 @@
-# 🍽️ AI Food Nutrients Classifier
+# 🌿 NutriVision AI
 
-A complete End-to-End deep learning pipeline that detects food from an uploaded image, estimates the portion size, and calculates the total nutritional breakdown in a production-ready Web App.
+NutriVision AI is a full-stack, AI-powered dietary tracking platform that combines computer vision, global databases, and conversational LLMs to seamlessly log and analyze your nutritional intake.
 
-## 🚀 Key Features
+## 🚀 Features
 
-- **Trained entirely from scratch**: No pre-trained ImageNet weights. The model learns visual features purely from a massive unified dataset of food images.
-- **Portion Size Estimator**: Predicts the weight logically using a secondary regression network.
-- **Nutrition Context Engine**: Utilizes explicit hashing (O(1) mapping) into the USDA Nutritional Database for instantaneous macronutrient calculations.
-- **Bilingual Support**: Fully toggleable between English and Tamil for users in diverse demographics.
-- **Export to PDF**: Generate structured `Nutrition Facts` reports on the fly. 
+*   **Computer Vision Pipeline:** Snap a photo of your meal. A custom-trained Convolutional Neural Network (CNN) paired with YOLOv8n object detection instantly identifies your food and calculates portions.
+*   **Barcode Scanner:** A native, mobile-friendly barcode scanner built with `react-webcam` and `html5-qrcode`. It pings the OpenFoodFacts global API to log any packaged food item.
+*   **Live USDA Database:** A lightning-fast Pandas backend searching a 7,000+ item USDA fallback database in real-time.
+*   **Conversational AI Nutritionist:** A floating React widget powered by **Google Gemini 2.5 Flash**. It reads your active SQLite meal logs and provides personalized, context-aware dietary advice.
+*   **Analytics Dashboard:** Beautiful, animated data visualization using `recharts` to track your 7-day rolling macro distributions and caloric intake.
+*   **Secure Authentication:** Multi-user support with hashed passwords and protected routing.
 
-## 🏗️ Architecture
+## 🛠️ Technology Stack
 
-```text
-UPLOAD ──► PREPROCESS ──► CNN FEATURE EXTRACTOR (Custom 5-Block w/ Residuals + SE)
-                                 │
-                 ┌───────────────┴───────────────┐
-                 ▼                               ▼
-     CLASSIFICATION HEAD                PORTION REGRESSOR
-     (Softmax - 101/256 classes)        (Linear Grams Est.)
-                 │                               │
-                 └──────────────►◄───────────────┘
-                                 │
-                          NUTRITION ENGINE (USDA Mapping)
-                                 │
-                         GRADIO WEB INTERFACE
-                          (Charts, PDF, Facts)
+*   **Frontend:** React, Vite, React Router, Recharts, Lucide Icons, Vanilla CSS (Glassmorphism UI).
+*   **Backend:** Python, FastAPI, SQLAlchemy, SQLite, Pandas.
+*   **AI/ML:** TensorFlow, OpenCV, Ultralytics YOLOv8, Google Generative AI (Gemini).
+*   **DevOps:** Docker, Docker Compose, Nginx.
+
+## ⚙️ Quick Start (Docker)
+
+1. Clone the repository.
+2. Insert your Gemini API Key in `api.py`.
+3. Build and launch the containerized application:
+```bash
+docker-compose up --build
 ```
+4. Access the frontend at `http://localhost:80` and the API at `http://localhost:8000`.
 
-## 🧠 The Custom CNN (Train from Scratch)
-Because this project strictly forbids ImageNet transfer learning, we designed a robust, modern deep network to ensure convergence:
-1. **Residual Connections** to prevent vanishing gradients during early epochs.
-2. **Squeeze-and-Excitation (SE) Blocks** dynamically recalibrate channel-wise feature responses just before classification.
-3. **Mixed Precision Training** (`mixed_float16`) reduces GPU VRAM consumption by 50% allowing heavy augmentations (MixUp, Cutout) to run rapidly without throwing OOM errors.
-4. **Cosine Annealing** learning rate scheduler pushes the model out of local minima.
-
-## ⚙️ Setup and Installation
-
-Requirements: Python 3.10+, and a CUDA-capable GPU is highly recommended.
-
-1. Clone or navigate to the project directory:
-   ```bash
-   cd nutrients_classifier
-   ```
-2. Execute the Setup Script (Linux/Mac):
-   ```bash
-   bash setup.sh
-   ```
-   *(On Windows, run setup steps line-by-line or use Git Bash)*
-
-### Manual Pipeline Execution
-
-To individually trigger pipeline components:
-1. **Download Data:** `python src/download_datasets.py`
-2. **Preprocess (create TFRecords & Mapping):** `python src/preprocess.py`
-3. **Train the Models:** `python src/train_model.py`
-4. **Run Inference on a single image:** `python src/predict.py data/raw/pizza.jpg`
-5. **Launch the UI UI:** `python app.py`
-
-## 📊 Dataset Credits
-- **Food-101**: Bossard, Lukas, et al. "Food-101–mining discriminative components with random forests." (ECCV 2014)
-- **UEC Food-256**: Kawano, Yoshiyuki, and Keiji Yanai. "Automatic expansion of a food image dataset leveraging existing categories with domain adaptation."
-- **Nutrition5k** (Portion Regression reference dataset) by Google Research.
-- **USDA Nutritional Database**: Open USDA open data catalog.
-
-*License: Please observe the specific data licenses for Food-101 and UEC-256 related to non-commercial / research usage.*
+## 📸 Architecture
+*Fully decoupled architecture with RESTful API communication and stateless frontend.*

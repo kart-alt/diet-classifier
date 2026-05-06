@@ -18,5 +18,17 @@ models/
 temp_bing_download/
 test_images/
 
+# Indian food dataset (downloaded via Kaggle)
+nutrients_classifier/data/indian_food_dataset/
+
+# SQLite database (user data — never commit)
+nutrients_classifier/nutrivision.db
+*.db
+
+# Node modules
+node_modules/
+nutrients_classifier/frontend/node_modules/
+nutrients_classifier/frontend/dist/
+
 # MacOS
 .DS_Store

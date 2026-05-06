@@ -1,33 +1,30 @@
-# Use official Python image
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies for OpenCV and building packages
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements
-COPY requirements.txt .
-
-# We filter out UI/frontend python libraries that are not needed in backend
-RUN pip install --no-cache-dir -r requirements.txt \
-    fastapi uvicorn python-multipart sqlalchemy openai pydantic
+# Install Python dependencies (lean render-optimized list)
+COPY requirements-render.txt .
+RUN pip install --no-cache-dir -r requirements-render.txt
 
 # Copy project files
 COPY api.py .
 COPY database.py .
 COPY models.py .
-COPY yolov8n.pt .
 COPY src/ ./src/
-COPY models/ ./models/
 COPY data/ ./data/
 
-# Expose port
+# Copy model files if they exist (optional — app gracefully falls back)
+COPY models/ ./models/
+
+# Expose port (Render sets $PORT dynamically)
 EXPOSE 8000
 
-# Command to run the backend
-CMD ["uvicorn", "api.py:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run with uvicorn — module name is 'api', not 'api.py'
+CMD ["sh", "-c", "uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000}"]

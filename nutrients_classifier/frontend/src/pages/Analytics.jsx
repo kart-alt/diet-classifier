@@ -3,7 +3,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Loader2 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 const Analytics = () => {
   const [calData, setCalData] = useState([]);

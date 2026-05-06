@@ -1,0 +1,16 @@
+# Render-optimized requirements (lightweight — no training deps)
+# Uses tensorflow-cpu to save RAM on Render's cloud servers
+tensorflow-cpu>=2.12
+fastapi
+uvicorn[standard]
+python-multipart
+sqlalchemy
+pydantic
+pillow
+numpy
+pandas
+fuzzywuzzy
+python-Levenshtein
+ultralytics
+google-genai
+httpx

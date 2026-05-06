@@ -3,7 +3,7 @@ import { Calendar, CheckCircle2, ChevronRight, Plus, Loader2 } from 'lucide-reac
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 const Tracker = () => {
   const [meals, setMeals] = useState([]);

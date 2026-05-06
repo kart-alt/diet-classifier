@@ -1,0 +1,37 @@
+services:
+  # ─── Backend: FastAPI + TensorFlow ────────────────────────────────────────
+  - type: web
+    name: nutrivision-backend
+    runtime: python
+    rootDir: nutrients_classifier
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false   # You will paste this in the Render dashboard
+      - key: FORCE_ACCEPT_DETECTIONS
+        value: "0"
+      - key: MIN_CLASS_CONF
+        value: "0.01"
+      - key: YOLO_MIN_CONF
+        value: "0.05"
+    disk:
+      name: nutrivision-db
+      mountPath: /opt/render/project/src
+      sizeGB: 1
+
+  # ─── Frontend: React Static Site ──────────────────────────────────────────
+  - type: web
+    name: nutrivision-frontend
+    runtime: static
+    rootDir: nutrients_classifier/frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false  # You will paste the backend URL here after backend deploys
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

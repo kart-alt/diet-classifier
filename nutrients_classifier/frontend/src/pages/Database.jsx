@@ -3,7 +3,7 @@ import { Search, Info, Loader2, Plus, Check } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 const Database = () => {
   const [query, setQuery] = useState('');
